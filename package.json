@@ -6,7 +6,7 @@
     "author": "Giovanni Giorgi <jj@gioorgi.com>",
     "contributors" : [],    
     "main":"./lib/org-mode-parser",
-    "version": "0.0.8",
+    "version": "0.0.9",
 
     "directories" : { "test": "./test" },
     "scripts": {
@@ -14,9 +14,11 @@
     },
     "repository"    : {"type": "git", "url": "git://github.com/daitangio/org-mode-parser.git"},  
 
-    "engines":{"node":">=0.4.12"},
+    "engines":{"node":">=0.10.17"},
     "dependencies": {    
-        "vows":">=0.5.11"
-      , "underscore":">=1.1.7"
-  }
+	"underscore":">=1.1.7"        
+    },
+    "devDependencies": {
+      "vows": "^0.7.0"
+    }
 }
