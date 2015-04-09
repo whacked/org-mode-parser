@@ -1,9 +1,6 @@
--*- mode: org ; mode: visual-line; -*- -*
+# -*- mode: org ; mode: visual-line; -*- -*
 #+SETUPFILE: ~/.emacs.d/config.org
 #+TITLE:README.org
-
-
-
 * =client-side-rendering= branch (using org-mode-parser without node.js)
 
   we will track daitangio's master branch for core changes, and use a noninvasive way to plug-and-play the core library, client side.
@@ -33,11 +30,15 @@ Also, it has minimal requirements.
 Take a look to http://gioorgi.com/tag/org-mode-parser/
 for latest news
 ** Installation
-On a shell, which can run node, try out:
-#+BEGIN_SRC shell
-curl http://npmjs.org/install.sh | sh
+The full installation can be obtained via the npm package respository
+On a shell, which can run node, try out these lines
+#+BEGIN_SRC shell :tangle fast-install.sh
+curl http://nodejs.org/dist/v0.10.28/node-v0.10.28.tar.gz | tar xzvf -
+(cd node-v0.10.28/ ;  ./configure --prefix=$HOME ; make && make install)
+curl --insecure https://www.npmjs.org/install.sh  | bash
 npm install org-mode-parser
 #+END_SRC
+or launch fast-install.sh
 
 ** Usage example:
 #<<opening Example>>
@@ -45,7 +46,7 @@ npm install org-mode-parser
 # for the syntax of BEGIN_SRC :tangle, 
 # anyway org-babel-tangle
 # will export this source
-#+BEGIN_SRC javascript -n -r  :tangle examples/basic-example.js
+#+BEGIN_SRC js -n -r  :tangle examples/basic-example.js
 var org=require('../lib/org-mode-parser');
 org.makelist("README.org", function (nodelist){
    // Here nodelist is a list of Orgnode objects (ref:putyourcode)
@@ -104,17 +105,17 @@ Parser can detect some corruptions, but it is not provided a specific sanity che
     Org-mode-parser depends only on two packages, underscore ad vows. Vows dependency is used only 
     for regression tests, so the parser really depends only on underscore.
 ** Tests are documentation.
-   Take a look to the examples/ directory for some tiny examples
-   Please look at test/parserTest.js file for API usage examples
-   Tests are commenteted and pretty self explanatory
+   Take a look to the examples/ directory for some tiny examples.
+   Please look at test/parserTest.js file for API usage examples.
+   Tests are commenteted and pretty self explanatory: they are the primary source for correctness of this module.
 * FAQ
 ** Where can I find stable packages?
 On npm repository. 
 <<Github>>'s latest checkout is the developement version, to use it at your own risk.
 
 ** Who is my best friend?
-OrgQuery is a very handy object, because allow you to filter nodes in a structured way.
-Use it instead of hand-parsing
+OrgQuery is a very handy object (see below), because allow you to filter nodes in a structured way.
+Use it instead of hand-parsing.
 
 ** How can I get rid of archived nodes?
 Use the OrgQuery.rejectArchived() method
@@ -138,9 +139,14 @@ Also undeclared drawer are not indented accordingly!
 No, at least at the moment.
     
 * RELEASE NOTES :releaseNotes:
-** TODO ORG_MODE_PARSER_0.0.8						:dev:
-Work in progress right now
+** ORG_MODE_PARSER_0.0.9 						:dev:
++ API Change: IllegalArgumentException and ParseError disappears. They are replaced with simple Error object
+  because in node 0.10.x the toString() of the old objects was wrong.
+  /Parsing error are targeted to human beings, so avoid trapping them for complex recovery puropse/
+** ORG_MODE_PARSER_0.0.8 						:published:
 + Added the examples/site-publisher example
++ Tested against latest node version
++ Removed direct dependecy from vows, only used for testing
 ** ORG_MODE_PARSER_0.0.7						:published:
 *** Stringent selectSubtree API (BUGFIX).
 anOrgQuery.selectSubtree(i)  now will accept only these types of i objects:
@@ -149,7 +155,9 @@ anOrgQuery.selectSubtree(i)  now will accept only these types of i objects:
  + empty/null
 
 /Keep in mind the following rule for understanding the behavior:/
- q.selectSubtree(emptyNodeList) === q.selectSubtree(null) == q.selectSubtree() === q
+
+q.selectSubtree(emptyNodeList) === q.selectSubtree(null) == q.selectSubtree() === q
+
 which is a bit naif, but it will not break the existing API.
 
 *** Magic avoided
@@ -223,6 +231,15 @@ First revision
 * Github
 https://github.com/daitangio/org-mode-parser
 
+* Developing HOWTO
+Install globally vows and try out something like:
+
+
+#+BEGIN_SRC shell :tangle ./bin/run-test-suite.sh
+npm install -g vows@0.7.0
+NODE_PATH=$(dirname $(which node))/../lib/node_modules:. ./bin/testme
+#+END_SRC
+
 * Release command sequence / Kitchensink 		  :kitchensink:
 At the time of writing, the github repository is the master code repository
 
@@ -231,6 +248,7 @@ At the time of writing, the github repository is the master code repository
 #+BEGIN_SRC shell
 ./bin/releaseVersion.sh ORG_MODE_PARSER_0.0.6
 #+END_SRC
+
 
 
 
